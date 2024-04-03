@@ -35,7 +35,7 @@ size_t Fmt::Tokens::DeclareTable()
             .M     = Mnemonic::BeginFmt,
             .Name = "Mnemonic::BeginFmt",
             .D     = Oper::Identifier,
-            .Loc   = { .Begin                 = Lexem::BeginMarkup },
+            .Loc   = { .Begin                 = Lexem::BeginFmt },
             .Flags = { .V                     = 0 }
         },
         {
@@ -44,7 +44,7 @@ size_t Fmt::Tokens::DeclareTable()
             .M     = Mnemonic::EndFmt,
             .Name = "Mnemonic::EndFmt",
             .D     = Oper::Identifier,
-            .Loc   = { .Begin            = Lexem::EndMarkup },
+            .Loc   = { .Begin            = Lexem::EndFmt },
             .Flags = { .V                = 0 }
         },
         {
