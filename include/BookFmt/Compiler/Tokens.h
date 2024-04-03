@@ -51,8 +51,8 @@ constexpr T On          = 139;
 
 namespace lex::Lexem
 {
-constexpr T BeginMarkup = "\\{"; ///< Pourquoi pas faire comme LaTex ? lol
-constexpr T EndMarkup   = "}";
+constexpr T BeginFmt = "\\{"; ///< Pourquoi pas faire comme LaTex ? lol
+constexpr T EndFmt   = "}";
 constexpr T ForeGround  = "Fg";
 constexpr T BackGround  = "Bg";
 constexpr T Icon        = "Icon";
