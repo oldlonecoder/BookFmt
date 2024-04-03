@@ -24,6 +24,10 @@ add_library(
     include/BookFmt/FmtAttribute.h
     cxx/BookFmt.cxx
     include/BookFmt/BookFmt.h
+    cxx/Compiler/FmtCompiler.cxx
+    include/BookFmt/Compiler/FmtCompiler.h
+    cxx/Compiler/FmtLexer.cxx
+    include/BookFmt/Compiler/FmtLexer.h
     #    include/${TargetName}/BookFmt.h 					cxx/BookFmt.cxx
     #    include/${TargetName}/Compiler/FmtToken.h 			cxx/Compiler/FmtToken.cxx
     #    include/${TargetName}/Compiler/FmtTokenTable.h 	cxx/Compiler/FmtTokenTable.cxx
@@ -49,8 +53,8 @@ target_include_directories(${TargetName} PUBLIC
 
 target_link_libraries(${TargetName} ${CMAKE_DL_LIBS} Lexer)
 
-#add_executable(Test.xApp Test.cxx Test.h)
-#target_link_libraries(Test.xApp Lexer)
+add_executable(Main.App main.cxx)
+target_link_libraries(Main.App BookFmt Lexer AppBook)
 
 
 

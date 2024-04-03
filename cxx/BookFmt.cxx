@@ -21,8 +21,36 @@
 //#pragma once
 
 
-
+#include <BookFmt/Compiler/Tokens.h>
 
 namespace Book
 {
+Fmt::BookFmt::BookFmt(std::string_view Txt):mText(Txt)
+{
+
+    mCFG = {
+        .Source = Txt,
+        .TokensTable = & mTokens,
+        .Product     = & mAttributes
+    };
+
+}
+
+
+Fmt::BookFmt::~BookFmt()
+{
+    mAttributes.clear();
+}
+
+
+Book::Result Fmt::BookFmt::Compile()
+{
+    FmtCompiler Comp;
+    Comp.Config() = mCFG;
+    if(!Comp.Compile()) return Book::Result::Failed;
+    // mAttributes is built...
+    return Result::Success;
+}
+
+
 } // Book

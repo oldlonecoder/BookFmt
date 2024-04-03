@@ -21,12 +21,50 @@
 
 #pragma once
 
+#include <BookFmt/FmtAttribute.h>
+#include <AppBook/Book/AppBook.h>
+#include <AppBook/Util/Delegate.h>
+#include <BookFmt/Compiler/FmtCompiler.h>
+//#include "BookFmt/Compiler/FmtLexer.h"
 
-namespace Book
+namespace Book::Fmt
 {
 
 
-class BookFmt {
+class BOOKFMT_API BookFmt
+{
+    std::string_view        mText{};
+
+    FmtAttribute::Array    mAttributes{};
+    Tokens                 mTokens{};
+
+    // - Hooks :
+    Delegate<FmtAttribute&> RenderAttributeDelegate;
+    Delegate<std::string_view const&> RenderTextDelegate;
+    // ========================================================
+    FmtCompiler::ConfigData mCFG{};
+public:
+
+    BookFmt() = default;
+    explicit BookFmt(std::string_view Txt);
+
+    ~BookFmt();
+
+    FmtAttribute::Array& Attributes() { return mAttributes; }
+
+    template<typename Class> Delegate<FmtAttribute&>::Slot& DelegateAttributeRenderer(Class& Obj, Delegate<FmtAttribute&>::Slot Slot)
+    {
+        return RenderAttributeDelegate.Connect(&Obj, Slot);
+    }
+    template<typename Class> BookFmt& DelegateTextRenderer(Class& Obj, Book::Action(Class::*Slot)(const std::string_view&))
+    {
+        RenderTextDelegate.Connect(&Obj, Slot);
+        return *this;
+    }
+
+
+    Book::Result Compile();
+
 
 };
 

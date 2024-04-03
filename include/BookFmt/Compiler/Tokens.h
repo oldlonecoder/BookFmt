@@ -26,8 +26,8 @@
 #include <BookFmt/Interface.h>
 namespace lex::Mnemonic
 {
-constexpr T BeginMarkup = 121;
-constexpr T EndMarkup   = 122;
+constexpr T BeginFmt    = 121;
+constexpr T EndFmt      = 122;
 constexpr T ForeGround  = 123;
 constexpr T BackGround  = 124;
 constexpr T Icon        = 125;

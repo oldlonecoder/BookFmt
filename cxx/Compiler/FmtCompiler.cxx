@@ -1,9 +1,10 @@
 //
-// Created by oldlonecoder on 24-04-02.
+// Created by oldlonecoder on 24-04-03.
 //
 
-//#ifndef BOOKFMT_FMTATTRIBUTE_H
-//#define BOOKFMT_FMTATTRIBUTE_H
+#include "BookFmt/Compiler/FmtCompiler.h"
+#include "BookFmt/Compiler/FmtLexer.h"
+
 
 /******************************************************************************************
  *   Copyright (C) 1965/1987/2023 by Serge Lussier                                        *
@@ -19,51 +20,33 @@
  *   ----------------------------------------------------------------------------------   *
  ******************************************************************************************/
 
-#pragma once
+//#pragma once
 
-#include <BookFmt/Interface.h>
-#include <Lexer/Token.h>
+
+#include <Lexer/Lexer.h>
 
 
 namespace Book::Fmt
 {
 
-/*!
- * @brief blah
- *
- * @code
-    \{ Fg: Yellow; ...} blah \{/Fg}
 
-
- */
-struct BOOKFMT_API FmtAttribute
+Book::Result FmtCompiler::Compile()
 {
-    Utf::Glyph::Type        Ic{};
-    Utf::AccentFR::Type     Ac{};
-    Color::Pair         Colors{};
-    lex::TokenInfo*     Info{nullptr};
+    FmtLexer Lexer;
+    mConfig.TokensTable->DeclareTable();
+    mConfig.TokensTable->DebugDumpRef();
 
-    using Array = std::vector<FmtAttribute>;
+    Lexer.Config() = {
+        .Text       = mConfig.Source,
+        .Production = mConfig.TokensTable
+    };
 
-    struct BOOKFMT_API AssignBits {
-        uint8_t Ic: 1;
-        uint8_t Ac: 1;
-        uint8_t Fg: 1;
-        uint8_t Bg: 1;
-        uint8_t Re: 1; ///< Reserved: Assigned Geometry
-        uint8_t Fr: 1; ///< Reserved: Assigned Frame Model.
-        // ...
-    } Assigned{0, 0, 0, 0, 0, 0};
+    if(!Lexer.Execute()) return Result::Failed;
+    mConfig.TokensTable->DebugDumpProduct();
 
+    Book::Debug() << "Test stops here... ";
 
-    FmtAttribute& operator = (Utf::Glyph::Type Graphen);
-    FmtAttribute& operator = (Utf::AccentFR::Type A);
-    FmtAttribute& operator = (Color::Pair Pair);
-    FmtAttribute& SetFG(Color::Code C);
-    FmtAttribute& SetBG(Color::Code C);
-
-};
-
+    return Result::Ok;
+}
 } // Book::Fmt
 
-//#endif //BOOKFMT_FMTATTRIBUTE_H

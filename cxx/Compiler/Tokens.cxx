@@ -32,8 +32,8 @@ size_t Fmt::Tokens::DeclareTable()
         {
             .Prim  = Type::Punc,
             .Sem   = Type::Punc,
-            .M     = Mnemonic::BeginMarkup,
-            .Name = "Mnemonic::BeginMarkup",
+            .M     = Mnemonic::BeginFmt,
+            .Name = "Mnemonic::BeginFmt",
             .D     = Oper::Identifier,
             .Loc   = { .Begin                 = Lexem::BeginMarkup },
             .Flags = { .V                     = 0 }
@@ -41,8 +41,8 @@ size_t Fmt::Tokens::DeclareTable()
         {
             .Prim  = Type::Punc,
             .Sem   = Type::Punc,
-            .M     = Mnemonic::EndMarkup,
-            .Name = "Mnemonic::EndMarkup",
+            .M     = Mnemonic::EndFmt,
+            .Name = "Mnemonic::EndFmt",
             .D     = Oper::Identifier,
             .Loc   = { .Begin            = Lexem::EndMarkup },
             .Flags = { .V                = 0 }
