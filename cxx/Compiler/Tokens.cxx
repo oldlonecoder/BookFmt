@@ -199,6 +199,15 @@ size_t Fmt::Tokens::DeclareTable()
             .D     = Oper::Identifier,
             .Loc   = {. Begin             = Lexem::Semicolon},
             .Flags = { .V                 = 0 }
+        },
+        {
+            .Prim  = Type::Punc,
+            .Sem   = Type::Punc,
+            .M     = Mnemonic::On,
+            .Name = "Mnemonic::ArgSep",
+            .D     = Oper::Identifier,
+            .Loc   = {. Begin             = Lexem::On},
+            .Flags = { .V                 = 0 }
         }
     };
 

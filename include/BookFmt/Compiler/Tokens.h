@@ -44,6 +44,7 @@ constexpr T Bottom      = 135;
 constexpr T Center      = 136;
 constexpr T HVCenter    = 137;
 constexpr T Box         = 138;
+constexpr T On          = 139;
 
 }
 
@@ -57,10 +58,10 @@ constexpr T BackGround  = "Bg";
 constexpr T Icon        = "Icon";
 constexpr T Accent      = "&";
 constexpr T AttrSeq     = ":";
-constexpr T ColorPair   = "Pair";
+constexpr T ColorPair   = "Colors";
 constexpr T Reset       = "/";
 constexpr T ArgSep      = ",";
-constexpr T LineBreak   = "brk";
+constexpr T LineBreak   = "Brk";
 constexpr T JustifyLeft = "<";
 constexpr T JustifyRight= ">";
 constexpr T Top         = "^";
@@ -68,6 +69,7 @@ constexpr T Bottom      = "_";
 constexpr T Center      = "-";
 constexpr T HVCenter    = "+";
 constexpr T Box         = "Box";
+constexpr T On          = "On";
 }
 
 
