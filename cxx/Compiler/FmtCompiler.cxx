@@ -66,6 +66,7 @@ Book::Result FmtCompiler::Compile()
     //...
 
     Book::Debug() << "Test stops here... ";
+    Book::Out() << "Todo: Implement more 'attributes' ...";
 
 
     return Result::Ok;
