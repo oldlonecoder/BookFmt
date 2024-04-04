@@ -209,6 +209,7 @@ size_t Fmt::Tokens::DeclareTable()
             .Loc   = {. Begin             = Lexem::On},
             .Flags = { .V                 = 0 }
         }
+
     };
 
 

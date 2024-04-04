@@ -30,6 +30,9 @@ namespace Book::Fmt
 class BOOKFMT_API FmtCompiler
 {
 
+
+    lex::TokenInfo::Iterator mCursor{};
+    FmtAttribute             mAttribute{};
 public:
 
 
@@ -40,6 +43,8 @@ public:
         FmtAttribute::Array*    Product{nullptr};
     };
 
+
+
     FmtCompiler() = default;
     ~FmtCompiler() =default;
 
@@ -47,8 +52,23 @@ public:
 
     FmtCompiler::ConfigData& Config() { return mConfig; }
 
+
 private:
     ConfigData mConfig{};
+
+    bool Expect(lex::Mnemonic::T M);
+    bool Expect(lex::Type::T Type);
+    Book::Result CompileFmt(FmtAttribute& A);
+    Book::Result CompileAccent(FmtAttribute& A);
+    Book::Result CompileFgKeyword(FmtAttribute& A);
+    Book::Result CompileBgKeyword(FmtAttribute& A);
+    Book::Result CompileColorPairKeyword(FmtAttribute& A);
+    Book::Result CompileLineBreakKeyword(FmtAttribute& A);
+    Book::Result CompileIconKeyword(FmtAttribute& A);
+    Book::Result CompileResetKeyword(FmtAttribute& A);
+
+    void PushAttribute(FmtAttribute& A);
+
 };
 
 } // Book::Fmt

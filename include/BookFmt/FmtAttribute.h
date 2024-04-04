@@ -41,7 +41,7 @@ struct BOOKFMT_API FmtAttribute
     Utf::Glyph::Type        Ic{};
     Utf::AccentFR::Type     Ac{};
     Color::Pair         Colors{};
-    lex::TokenInfo*     Info{nullptr};
+    std::vector<lex::TokenInfo::Iterator> TokenComponents{};
 
     using Array = std::vector<FmtAttribute>;
 
@@ -61,6 +61,8 @@ struct BOOKFMT_API FmtAttribute
     FmtAttribute& operator = (Color::Pair Pair);
     FmtAttribute& SetFG(Color::Code C);
     FmtAttribute& SetBG(Color::Code C);
+
+    FmtAttribute& operator << (lex::TokenInfo::Iterator It) { TokenComponents.emplace_back(It); return *this; }
 
 };
 
