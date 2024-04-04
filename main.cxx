@@ -26,7 +26,7 @@ public:
 Book::Result Application::Run()
 {
     Setup();
-    Book::Fmt::BookFmt BF(R"( Testing  \{<; Colors:Yellow On Blue Icon:Success} Book\{/Fg}::Fmt::BookFmt...\{Brk;}Termin&eacute; !!)");
+    Book::Fmt::BookFmt BF(R"( Testing  \{Colors:Yellow On Blue Icon:Success} Book\{Fg:Cyan}::Fmt::BookFmt...\{Colors:Red,White;}Termin&eacute; !!)");
     (void)BF.Compile();
     return Book::Result::Ok;
 }

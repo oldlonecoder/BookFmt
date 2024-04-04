@@ -60,5 +60,23 @@ Fmt::FmtAttribute &Fmt::FmtAttribute::SetBG(Color::Code C)
     return *this;
 }
 
+void FmtAttribute::DebugDumpDetails()
+{
+    StrAcc Acc;
+    Book::Out() << "FmtAttribute Details:";
+    Book::Out() << "-----------------------------------------------------------------";
+    Book::Out() << "Tokens Components:";
+    for(auto Token: TokenComponents) Book::Out() << Token->Details();
+    Book::Out() << "-----------------------------------------------------------------";
+    Book::Out() << "Components:";
+    Book::Out() << "-----------------------------------------------------------------";
+    Book::Out() << "Assigned:";
+    if(Assigned.Fg || Assigned.Bg) Book::Out() << Colors;
+    if(Assigned.Ic) Book::Out() << "Icon       Enum :" << Ic;
+    if(Assigned.Ac) Book::Out() << "Accent     Enum :" << Ac;
+    Book::Out() << "...";
+    //...
+}
+
 
 } // Book

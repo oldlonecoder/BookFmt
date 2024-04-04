@@ -62,7 +62,9 @@ struct BOOKFMT_API FmtAttribute
     FmtAttribute& SetFG(Color::Code C);
     FmtAttribute& SetBG(Color::Code C);
 
-    FmtAttribute& operator << (lex::TokenInfo::Iterator It) { TokenComponents.emplace_back(It); return *this; }
+    FmtAttribute& operator << (lex::TokenInfo::Iterator It) { TokenComponents.push_back(It); return *this; }
+
+    void DebugDumpDetails();
 
 };
 

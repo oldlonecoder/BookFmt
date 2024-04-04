@@ -33,8 +33,8 @@ namespace Book::Fmt
 Book::Result FmtCompiler::Compile()
 {
     FmtLexer Lexer;
-    mConfig.TokensTable->DeclareTable();
-    mConfig.TokensTable->DebugDumpRef();
+//    mConfig.TokensTable->DeclareTable();
+//    mConfig.TokensTable->DebugDumpRef();
 
     Lexer.Config() = {
         .Text       = mConfig.Source,
@@ -46,8 +46,11 @@ Book::Result FmtCompiler::Compile()
 
 
     mCursor = mConfig.TokensTable->Production().begin();
+    Book::Debug() << " Entering in the Compiler's Token stream loop:";
+
     while(mCursor != mConfig.TokensTable->Production().end())
     {
+        Book::Debug() << " Top-Loop: " << mCursor->Details();
         if(!CompileFmt(mAttribute)) {
             if (!CompileAccent(mAttribute)) {
                 if((mCursor->M != lex::Mnemonic::EndFmt) || ( (mCursor->M != lex::Mnemonic::Semicolon) && (!mAttribute.Assigned.Ac)))
@@ -59,7 +62,6 @@ Book::Result FmtCompiler::Compile()
         }
         PushAttribute(mAttribute);
         mAttribute = FmtAttribute(); // Reset FmtAttribute contents ( new attribute ).
-        ++mCursor;
     }
     //...
 
@@ -91,7 +93,7 @@ Book::Result FmtCompiler::CompileFmt(FmtAttribute& A)
         {lex::Mnemonic::Reset,      &FmtCompiler::CompileResetKeyword},
         //{lex::Mnemonic::LineBreak,  &FmtCompiler::CompileIconKeyword},
     };
-    A << mCursor;
+    A << mCursor++;
     while((mCursor != mConfig.TokensTable->Production().end()) && !Expect(lex::Mnemonic::EndFmt))
     {
         // Keywords:
@@ -99,22 +101,17 @@ Book::Result FmtCompiler::CompileFmt(FmtAttribute& A)
         auto Node = Keys.find(mCursor->M);
         if(Node == Keys.end())
         {
-            if(mCursor->M == lex::Mnemonic::EndFmt)
-            {
-                ++mCursor;
-                return Book::Result::Accepted;
-            }
-            if(mCursor->M==lex::Mnemonic::Semicolon)
-            {
-                ++mCursor;
-                continue;
-            }
-            return Book::Result::Rejected;
+            if(mCursor->M != lex::Mnemonic::EndFmt)
+                return Book::Result::Rejected;
+
+            A << mCursor++;
+            return Book::Result::Accepted;
         }
 
         if(!(this->*Node->second)(A))
             return Book::Result::Rejected;
     }
+
 
     return Result::Accepted;
 }
@@ -125,17 +122,21 @@ Book::Result FmtCompiler::CompileAccent(FmtAttribute& A)
     //...
     if(mCursor->M != lex::Mnemonic::Accent)
         return Result::Rejected;
-
+    std::string Name;
     A << mCursor;
     if(Expect(lex::Type::Id))
     {
         A << mCursor;
-        auto [Ok,Acc] = Utf::AccentFR::ScanName(mCursor->Text().data());
+        Name = std::string(mCursor->Text());
+        auto [Ok,Acc] = Utf::AccentFR::ScanName(Name);
         if(!Ok) return Result::Rejected;
         A.Assigned.Ac = 1;
         A.Ac = Acc;
+        if(!Expect(lex::Mnemonic::Semicolon)) return Book::Result::Rejected;
+        A << mCursor++;
+        return Book::Result::Accepted;
     }
-    return Result::Accepted;
+    return Result::Rejected;
 }
 
 bool FmtCompiler::Expect(lex::Mnemonic::T M)
@@ -152,21 +153,25 @@ bool FmtCompiler::Expect(lex::Mnemonic::T M)
 bool FmtCompiler::Expect(lex::Type::T Type)
 {
     ++mCursor;
-    if(mCursor->Sem &  Type){
-        --mCursor;
-        return false;
-    }
-    return true;
+    if(mCursor->Sem &  Type) return true;
+
+    --mCursor;
+    return false;
 }
 
 Book::Result FmtCompiler::CompileFgKeyword(FmtAttribute &A)
 {
+    A << mCursor;
     if(Expect(lex::Mnemonic::AttrSeq)) {
         A << mCursor;
         if (Expect(lex::Type::Id)) {
             A << mCursor;
             A.Assigned.Fg = 1;
             A.SetFG(Color::Scan(mCursor->Text().data()));
+            if(Expect(lex::Mnemonic::Semicolon))
+                A << mCursor++; // consume if it is or rewind mCursor if not.
+            else
+                ++mCursor;
         }
         else return Result::Rejected;
     }
@@ -175,12 +180,17 @@ Book::Result FmtCompiler::CompileFgKeyword(FmtAttribute &A)
 
 Book::Result FmtCompiler::CompileBgKeyword(FmtAttribute &A)
 {
+    A << mCursor;
     if(Expect(lex::Mnemonic::AttrSeq)) {
         A << mCursor;
         if (Expect(lex::Type::Id)) {
             A << mCursor;
             A.Assigned.Bg = 1;
             A.SetBG(Color::Scan(mCursor->Text().data()));
+            if(Expect(lex::Mnemonic::Semicolon))
+                A << mCursor++; // consume if it is or rewind mCursor if not.
+            else
+                ++mCursor;
         }
         else return Result::Rejected;
     }
@@ -189,20 +199,29 @@ Book::Result FmtCompiler::CompileBgKeyword(FmtAttribute &A)
 
 Book::Result FmtCompiler::CompileColorPairKeyword(FmtAttribute &A)
 {
+    A << mCursor;
+    std::string ColNameTemp;
     if(Expect(lex::Mnemonic::AttrSeq)) {
         A << mCursor;
         if (Expect(lex::Type::Id)) {
             A << mCursor;
-            A.Assigned.Bg = 1;
-            A.SetFG(Color::Scan(mCursor->Text().data()));
+            A.Assigned.Fg = 1;
+            ColNameTemp = std::string(mCursor->Text());
+            A.SetFG(Color::Scan(ColNameTemp));
         }
         if(Expect(lex::Mnemonic::On) || Expect(lex::Mnemonic::ArgSep))
         {
+            A << mCursor;
             if(Expect(lex::Type::Id))
             {
                 A << mCursor;
                 A.Assigned.Bg = 1;
-                A.SetBG(Color::Scan(mCursor->Text().data()));
+                ColNameTemp = std::string(mCursor->Text());
+                A.SetBG(Color::Scan(ColNameTemp));
+                if(Expect(lex::Mnemonic::Semicolon))
+                    A << mCursor++; // consume if it is or rewind mCursor if not.
+                else
+                    ++mCursor; // Consume anyway...
             }
             else return Result::Rejected;
         }
@@ -218,20 +237,25 @@ Book::Result FmtCompiler::CompileLineBreakKeyword(FmtAttribute &A)
 
 Book::Result FmtCompiler::CompileIconKeyword(FmtAttribute &A)
 {
-
+    A << mCursor;
     if(Expect(lex::Mnemonic::AttrSeq))
     {
         A << mCursor;
         if(Expect(lex::Type::Id))
         {
             A << mCursor;
-            auto [Ok,Ic] = Utf::Glyph::ScanName(mCursor->Text().data());
+            auto Name = std::string(mCursor->Text());
+            auto [Ok,Ic] = Utf::Glyph::ScanName(Name);
             if(Ok)
             {
                 A.Assigned.Ic = 1;
-                A.Ic = Utf::Glyph::Scan(mCursor->Text().data());
+                A.Ic = Ic;
+                if(Expect(lex::Mnemonic::Semicolon))
+                    A << mCursor++; // consume if it is or rewind mCursor if not.
+                else
+                    ++mCursor;
             }
-            return Result::Rejected;
+            else return Result::Rejected;
         }
     }
     return Result::Accepted;
@@ -240,33 +264,14 @@ Book::Result FmtCompiler::CompileIconKeyword(FmtAttribute &A)
 void FmtCompiler::PushAttribute(FmtAttribute &A)
 {
     //...
+    Book::Debug() << ":";
+    A.DebugDumpDetails();
     mConfig.Product->emplace_back(A);
 }
 
 Book::Result FmtCompiler::CompileResetKeyword(FmtAttribute &A)
 {
-    if(Expect(lex::Type::Keyword))
-    {
-        A << mCursor;
-        switch(mCursor->M)
-        {
-            case lex::Mnemonic::ForeGround:
-                A.Assigned.Fg = 1;
-                A.Colors.Fg = Color::Reset;
-                break;
-            case lex::Mnemonic::BackGround:
-                A.Assigned.Bg = 1;
-                A.Colors.Bg = Color::Reset;
-                break;
-            case lex::Mnemonic::ColorPair:
-                A.Assigned.Bg = A.Assigned.Bg = 1;
-                A.Colors = {Color::Reset,Color::Reset};
-                break;
-            default: break;
-        }
-        return Result::Accepted;
-    }
-    return  Book::Result::Rejected;
+    return  Book::Result::Notimplemented;
 }
 
 
