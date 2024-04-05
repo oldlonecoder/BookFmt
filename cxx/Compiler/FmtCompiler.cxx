@@ -266,8 +266,9 @@ void FmtCompiler::PushAttribute(FmtAttribute &A)
 {
     //...
     Book::Debug() << ":";
+    A.Length = (A.TokenComponents.back()->Loc.Offset - (*A.TokenComponents.begin())->Loc.Offset)+1;
     A.DebugDumpDetails();
-    mConfig.Product->emplace_back(A);
+    mConfig.Product->push_back(A);
 }
 
 Book::Result FmtCompiler::CompileResetKeyword(FmtAttribute &A)

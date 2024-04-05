@@ -34,9 +34,9 @@ namespace Book::Fmt
 class BOOKFMT_API BookFmt
 {
     std::string_view        mText{};
-
-    FmtAttribute::Array    mAttributes{};
-    Tokens                 mTokens{};
+    StrAcc                  mProduction{}; ///< Rendered Production - or temporary Rendered string(Working buffer).
+    FmtAttribute::Array     mAttributes{};
+    Tokens                  mTokens{};
 
     // - Hooks :
     Delegate<FmtAttribute&> RenderAttributeDelegate;
@@ -62,6 +62,26 @@ public:
         return *this;
     }
 
+    BookFmt&     operator << (const std::string& Input);
+    Book::Result operator >> (StrAcc& Output);
+
+
+    Book::Result Process();
+private:
+
+    std::string RenderAttribute(FmtAttribute const& A);
+
+//    /*!
+//     * @brief Render production into \c Input
+//     * @tparam InputType
+//     * @param Input
+//     * @note Input operator '<<' must be implemented on InputType
+//     * @return RTS ( Ref-To_Self )
+//     */
+//    template<class InputType> BookFmt& operator >> (InputType& Input)
+//    {
+//
+//    }
 
     Book::Result Compile();
 

@@ -26,8 +26,10 @@ public:
 Book::Result Application::Run()
 {
     Setup();
-    Book::Fmt::BookFmt BF(R"( Testing  \{Colors:Yellow On Blue Icon:Success} Book\{Fg:Cyan}::Fmt::BookFmt...\{Colors:Red,White;}Termin&eacute; !!)");
-    (void)BF.Compile();
+    StrAcc Txt;
+    Book::Fmt::BookFmt BF;
+    BF << R"( Testing  \{Colors:Yellow On Blue Icon:Success} Book\{Fg:Cyan}::Fmt::BookFmt...\{Colors:Red,White;}Termin&eacute; !!)" >> Txt;
+
     return Book::Result::Ok;
 }
 

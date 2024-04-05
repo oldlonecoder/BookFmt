@@ -42,7 +42,7 @@ struct BOOKFMT_API FmtAttribute
     Utf::AccentFR::Type     Ac{};
     Color::Pair         Colors{};
     std::vector<lex::TokenInfo::Iterator> TokenComponents{};
-
+    size_t Length{0};
     using Array = std::vector<FmtAttribute>;
 
     struct BOOKFMT_API AssignBits {

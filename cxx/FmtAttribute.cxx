@@ -68,13 +68,12 @@ void FmtAttribute::DebugDumpDetails()
     Book::Out() << "Tokens Components:";
     for(auto Token: TokenComponents) Book::Out() << Token->Details();
     Book::Out() << "-----------------------------------------------------------------";
-    Book::Out() << "Components:";
-    Book::Out() << "-----------------------------------------------------------------";
-    Book::Out() << "Assigned:";
-    if(Assigned.Fg || Assigned.Bg) Book::Out() << Colors;
+    Book::Out() << "Assigned components:";
+    if(Assigned.Fg || Assigned.Bg) Book::Out() << Colors << Color::Name(Colors.Fg) << Color::Reset<< " On " << Colors << Color::Name(Colors.Bg) << Color::Reset;
     if(Assigned.Ic) Book::Out() << "Icon       Enum :" << Ic;
     if(Assigned.Ac) Book::Out() << "Accent     Enum :" << Ac;
-    Book::Out() << "...";
+    Book::Out() << "Length:" << Length;
+    Book::Out() << "More to come...";
     //...
 }
 
