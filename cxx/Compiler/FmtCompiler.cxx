@@ -168,7 +168,8 @@ Book::Result FmtCompiler::CompileFgKeyword(FmtAttribute &A)
         if (Expect(lex::Type::Id)) {
             A << mCursor;
             A.Assigned.Fg = 1;
-            A.SetFG(Color::Scan(mCursor->Text().data()));
+            std::string Str = std::string(mCursor->Loc.Begin, mCursor->Loc.Length);
+            A.SetFG(Color::Scan(Str));
             if(Expect(lex::Mnemonic::Semicolon))
                 A << mCursor++; // consume if it is or rewind mCursor if not.
             else

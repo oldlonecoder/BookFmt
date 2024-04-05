@@ -29,7 +29,7 @@ Book::Result Application::Run()
     StrAcc Txt;
     Book::Fmt::BookFmt BF;
     BF << R"( Testing  \{Colors:Yellow On Blue Icon:Success} Book\{Fg:Cyan}::Fmt::BookFmt...\{Colors:Red,White;}Termin&eacute; !!)" >> Txt;
-
+    Book::Test() << "Test Result:" << Txt;
     return Book::Result::Ok;
 }
 

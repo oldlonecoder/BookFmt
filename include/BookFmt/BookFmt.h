@@ -33,7 +33,6 @@ namespace Book::Fmt
 
 class BOOKFMT_API BookFmt
 {
-    std::string_view        mText{};
     StrAcc                  mProduction{}; ///< Rendered Production - or temporary Rendered string(Working buffer).
     FmtAttribute::Array     mAttributes{};
     Tokens                  mTokens{};

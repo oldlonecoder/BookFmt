@@ -25,7 +25,7 @@
 
 namespace Book
 {
-Fmt::BookFmt::BookFmt(std::string_view Txt):mText(Txt)
+Fmt::BookFmt::BookFmt(std::string_view Txt)
 {
 
     mCFG = {
@@ -72,7 +72,7 @@ std::string Fmt::BookFmt::RenderAttribute(const Fmt::FmtAttribute &A)
         return Buffer();
     }
     if(A.Assigned.Fg) Buffer << A.Colors.Fg;
-    if(A.Assigned.Bg) Buffer << A.Colors.Bg;
+    if(A.Assigned.Bg) Buffer << Color::AnsiBg(A.Colors.Bg);
     if(A.Assigned.Ic) Buffer << A.Ic;
     // ... More to come
     return Buffer();
@@ -96,15 +96,16 @@ Fmt::BookFmt &Fmt::BookFmt::operator<<(const std::string &Input)
  */
 Book::Result Fmt::BookFmt::operator>>(StrAcc &Output)
 {
+    std::string_view Text = mCFG.Source;
     if(mAttributes.empty())
     {
-        Output << mText.data();
+        Output << Text.data();
         return Book::Result::Ok;
     }
 
-    auto Source = mText.begin();
+    auto Source = Text.begin();
     auto Begin  = Source;
-    auto End = mText.end();
+    auto End = Text.end();
     size_t Offset = 0;
 
     for(auto const& A: mAttributes)
@@ -119,9 +120,14 @@ Book::Result Fmt::BookFmt::operator>>(StrAcc &Output)
             ++Offset;
         }
         Output << RenderAttribute(A);
-        Source += EndAttrIt->Loc.Offset - StartAttrIt->Loc.Offset;
+        Source += A.Length;
+        Offset += A.Length;
     }
-    return Result::Failed;
+    while(Source != Text.end())
+    {
+        Output += *Source++;
+    }
+    return Book::Result::Ok;
 }
 
 } // Book
