@@ -56,6 +56,7 @@ Book::Result FmtCompiler::Compile()
                 if((mCursor->M != lex::Mnemonic::EndFmt) || ( (mCursor->M != lex::Mnemonic::Semicolon) && (!mAttribute.Assigned.Ac)))
                 {
                     ++mCursor;
+                    if(!mAttribute.TokenComponents.empty()) mAttribute = FmtAttribute();
                     continue;
                 }
             }
