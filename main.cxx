@@ -28,7 +28,7 @@ Book::Result Application::Run()
     Setup();
     StrAcc Txt;
     Book::Fmt::BookFmt BF;
-    BF << R"( Testing  \{Colors:Yellow On Blue Icon:Success} Book\{Colors:White On Grey}::\{Fg:Grey100}Fmt\{Fg:Cyan}::\{Fg:BlueViolet}BookFmt\{Fg:White}...\{Colors:Red,White;}Termin&eacute; !!)" >> Txt;
+    BF << R"( Testing  \{Colors:Orange1 On Blue Icon:Success} Book\{Colors:White On Grey}::\{Fg:Grey100}Fmt\{Fg:Cyan}::\{Fg:BlueViolet}BookFmt\{Fg:White}...\{Colors:Red,White;}Termin&eacute; !!)" >> Txt;
     Book::Test() << "Test Result:" << Txt;
     return Book::Result::Ok;
 }
